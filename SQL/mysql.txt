@@ -1,0 +1,29 @@
+-- Create the Student table
+CREATE TABLE Student (
+    Std_ID INT PRIMARY KEY,    
+    Phone VARCHAR(15),
+    Email VARCHAR(50),    
+    Faculty VARCHAR(50),
+    Fname VARCHAR(50),    
+    Lname VARCHAR(50)
+);
+
+-- Create the Books table
+CREATE TABLE Books (
+    ISBN VARCHAR(13) PRIMARY KEY,    
+    Quantity INT,
+    Title VARCHAR(100),    
+    Author VARCHAR(100),
+    Is_borrowed BOOLEAN
+);
+
+-- Create the Borrows table
+CREATE TABLE Borrows (    
+    ISBN VARCHAR(13),
+    Std_ID INT,    
+    Borrow_date DATE,
+    Due_date DATE,    
+    PRIMARY KEY (ISBN, Std_ID),
+    FOREIGN KEY (ISBN) REFERENCES Books(ISBN),    
+    FOREIGN KEY (Std_ID) REFERENCES Student(Std_ID)
+);

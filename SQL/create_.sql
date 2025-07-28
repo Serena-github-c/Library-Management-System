@@ -1,0 +1,65 @@
+CREATE TABLE Adminstrator (
+    admin_ID CHAR(3) NOT NULL,
+    Username VARCHAR(50) NOT NULL,
+    Password VARCHAR(50) NOT NULL,
+    PRIMARY KEY (admin_ID)
+);
+
+
+CREATE TABLE Student (
+    Std_ID CHAR(5) NOT NULL,
+    Fname VARCHAR(100) NOT NULL,
+	MidName CHAR(1) NOT NULL,
+    Lname VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Phone VARCHAR(8) NOT NULL,
+    Faculty VARCHAR(50) NOT NULL,
+    admin_ID CHAR(3) NOT NULL,
+    PRIMARY KEY (Std_ID),
+    FOREIGN KEY (admin_ID)
+        REFERENCES Adminstrator (admin_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Books (
+    ISBN VARCHAR(20) NOT NULL,
+    Title VARCHAR(200) NOT NULL,
+    Author VARCHAR(100) NOT NULL,
+    Category VARCHAR(100) NOT NULL,
+    Publication_year INT NOT NULL,
+    Quantity INT NOT NULL,
+    Is_borrowed INT NOT NULL,
+    admin_ID CHAR(3) NOT NULL,
+    PRIMARY KEY (ISBN),
+    FOREIGN KEY (admin_ID)
+        REFERENCES Adminstrator (admin_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Borrows (
+    Borrow_ID INT AUTO_INCREMENT NOT NULL,
+    Std_ID CHAR(5) NOT NULL,
+    ISBN VARCHAR(20) NOT NULL,
+    Borrow_date DATE NOT NULL,
+    Return_date DATE,
+    Due_date DATE NOT NULL,
+
+    PRIMARY KEY (Borrow_ID),
+    FOREIGN KEY (ISBN)
+        REFERENCES Books (ISBN)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (Std_ID)
+        REFERENCES Student (Std_ID)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+DELIMITER //
+
+CREATE TRIGGER set_due_date
+BEFORE INSERT ON Borrows
+FOR EACH ROW
+BEGIN
+    SET NEW.Due_date = DATE_ADD(NEW.Borrow_date, INTERVAL 14 DAY);
+END //
+
+DELIMITER ;
